@@ -64,6 +64,7 @@ export function SideNav(): React.JSX.Element {
             Meetting room 200 ok
           </Typography>
         </Box>
+        {/* กรอบ dropdown ไม่ได้ใช้ */}
         {/* <Box
           sx={{
             alignItems: 'center',
@@ -110,6 +111,7 @@ export function SideNav(): React.JSX.Element {
           </Box>
         </Box>
       </Stack>
+      {/* sidebar slote */}
       <Divider sx={{ borderColor: 'var(--mui-palette-neutral-700)' }} />
       <Box component="nav" sx={{ flex: '1 1 auto', p: '12px' }}>
         {renderNavItems({ pathname, items: navItems })}
@@ -119,6 +121,7 @@ export function SideNav(): React.JSX.Element {
   );
 }
 
+// สร้าง function สำหรับ render รายการเมนู
 function renderNavItems({ items = [], pathname }: { items?: NavItemConfig[]; pathname: string }): React.JSX.Element {
   const children = items.reduce((acc: React.ReactNode[], curr: NavItemConfig): React.ReactNode[] => {
     const { key, ...item } = curr;
@@ -129,7 +132,7 @@ function renderNavItems({ items = [], pathname }: { items?: NavItemConfig[]; pat
   }, []);
 
   return (
-    <Stack component="ul" spacing={1} sx={{ listStyle: 'none', m: 0, p: 0 }}>
+    <Stack component="ul" spacing={1} sx={{ bg: 'white',listStyle: 'none', m: 0, p: 0 }}>
       {children}
     </Stack>
   );
@@ -139,6 +142,7 @@ interface NavItemProps extends Omit<NavItemConfig, 'items'> {
   pathname: string;
 }
 
+// สร้าง function สำหรับ render รายการเมนู
 function NavItem({ disabled, external, href, icon, matcher, pathname, title }: NavItemProps): React.JSX.Element {
   const active = isNavItemActive({ disabled, external, href, matcher, pathname });
   const Icon = icon ? navIcons[icon] : null;
