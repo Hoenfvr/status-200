@@ -9,9 +9,9 @@ import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import dayjs from 'dayjs';
 
 import { config } from '@/config';
-import { CustomersFilters } from '@/components/admin/customer/customers-filters';
-import { CustomersTable } from '@/components/admin/customer/customers-table';
-import type { Customer } from '@/components/admin/customer/customers-table';
+import { CustomersFilters } from '@/components/admin/booking-list/customers-filters';
+import { CustomersTable } from '@/components/admin/booking-list/customers-table';
+import type { Customer } from '@/components/admin/booking-list/customers-table';
 
 export const metadata = { title: `Customers | Dashboard | ${config.site.name}` } satisfies Metadata;
 

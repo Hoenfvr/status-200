@@ -4,20 +4,19 @@ import Grid from '@mui/material/Unstable_Grid2';
 import dayjs from 'dayjs';
 
 import { config } from '@/config';
-import { Budget } from '@/components/admin/approve/budget';
-import { LatestOrders } from '@/components/admin/approve/latest-orders';
-import { LatestProducts } from '@/components/admin/approve/latest-products';
-import { Sales } from '@/components/admin/approve/sales';
-import { TasksProgress } from '@/components/admin/approve/tasks-progress';
-import { TotalCustomers } from '@/components/admin/approve/total-customers';
-import { TotalProfit } from '@/components/admin/approve/total-profit';
-import { Traffic } from '@/components/admin/approve/traffic';
+import { Budget } from '@/components/admin/dashboard/element-dashboard/budget';
+import { LatestOrders } from '@/components/admin/dashboard/element-dashboard/latest-orders';
+import { LatestProducts } from '@/components/admin/dashboard/element-dashboard/latest-products';
+import { Sales } from '@/components/admin/dashboard/element-dashboard/sales';
+import { TasksProgress } from '@/components/admin/dashboard/element-dashboard/tasks-progress';
+import { TotalCustomers } from '@/components/admin/dashboard/element-dashboard/total-customers';
+import { TotalProfit } from '@/components/admin/dashboard/element-dashboard/total-profit';
+import { Traffic } from '@/components/admin/dashboard/element-dashboard/traffic';
 
 export const metadata = { title: `Overview | Dashboard | ${config.site.name}` } satisfies Metadata;
 
 export default function Page(): React.JSX.Element {
   return (
-    <>
     <Grid container spacing={3}>
       <Grid lg={3} sm={6} xs={12}>
         <Budget diff={12} trend="up" sx={{ height: '100%' }} value="$24k" />
@@ -130,6 +129,5 @@ export default function Page(): React.JSX.Element {
         />
       </Grid>
     </Grid>
-    </>
   );
 }

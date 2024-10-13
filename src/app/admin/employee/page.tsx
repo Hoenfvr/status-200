@@ -4,19 +4,17 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import { config } from '@/config';
-import { Notifications } from '@/components/admin/settings/notifications';
-import { UpdatePasswordForm } from '@/components/admin/settings/update-password-form';
+import { Notifications } from '@/components/admin/room/notifications';
+import { UpdatePasswordForm } from '@/components/admin/room/update-password-form';
+import EmployeeManagement from '@/components/admin/employee/employee-management';
 
 export const metadata = { title: `Settings | Dashboard | ${config.site.name}` } satisfies Metadata;
 
 export default function Page(): React.JSX.Element {
   return (
     <Stack spacing={3}>
-      <div>
-        <Typography variant="h4">Settings</Typography>
-      </div>
-      <Notifications />
-      <UpdatePasswordForm />
+        <Typography variant="h4">Employee Management</Typography>
+      <EmployeeManagement/>
     </Stack>
   );
 }
