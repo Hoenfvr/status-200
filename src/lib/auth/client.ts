@@ -19,7 +19,7 @@ const user = {
 export interface SignUpParams {
   firstName: string;
   lastName: string;
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -28,7 +28,7 @@ export interface SignInWithOAuthParams {
 }
 
 export interface SignInWithPasswordParams {
-  email: string;
+  username: string;
   password: string;
 }
 
@@ -52,12 +52,12 @@ class AuthClient {
   }
 
   async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
-    const { email, password } = params;
+    const { username, password } = params;
 
     // Make API request
 
     // We do not handle the API, so we'll check if the credentials match with the hardcoded ones.
-    if (email !== 'sofia@devias.io' || password !== 'Secret1') {
+    if (username !== 'admin' || password !== '1234') {
       return { error: 'Invalid credentials' };
     }
 

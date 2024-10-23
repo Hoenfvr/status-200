@@ -1,0 +1,119 @@
+{
+  "users": [
+    {
+      "user_id": 1,
+      "username": "admin",
+      "password": "1234",
+      "user_type": "admin",
+      "firstname_eng": "Admiddn",
+      "lastname_eng": "Userdd"
+    },
+    {
+      "user_id": 2,
+      "username": "user1",
+      "password": "user123",
+      "user_type": "user",
+      "firstname_eng": "John",
+      "lastname_eng": "Doe"
+    },
+    {
+      "user_id": 3,
+      "username": "user2",
+      "password": "user456",
+      "user_type": "user",
+      "firstname_eng": "Jane",
+      "lastname_eng": "Smith"
+    }
+  ],
+  "buildings": [
+    {
+      "building_id": 1,
+      "building_name": "Main Building"
+    },
+    {
+      "building_id": 2,
+      "building_name": "Annex Building"
+    }
+  ],
+  "floors": [
+    {
+      "floor_id": 1,
+      "building_id": 1,
+      "floor_number": 1
+    },
+    {
+      "floor_id": 2,
+      "building_id": 1,
+      "floor_number": 2
+    },
+    {
+      "floor_id": 3,
+      "building_id": 2,
+      "floor_number": 1
+    }
+  ],
+  "meetingRooms": [
+    {
+      "room_id": 1,
+      "room_name": "Room A",
+      "room_type": "standard",
+      "floor_id": 1,
+      "status": "available",
+      "capacity": 10,
+      "facilities": ["Projector", "Whiteboard"]
+    },
+    {
+      "room_id": 2,
+      "room_name": "Room B",
+      "room_type": "vip",
+      "floor_id": 1,
+      "status": "booked",
+      "capacity": 15,
+      "facilities": ["Projector", "Conference Call"]
+    },
+    {
+      "room_id": 3,
+      "room_name": "Room C",
+      "room_type": "standard",
+      "floor_id": 3,
+      "status": "available",
+      "capacity": 8,
+      "facilities": ["Whiteboard"]
+    },
+    {
+      "room_id": 4,
+      "room_name": "Room D",
+      "room_type": "vip",
+      "floor_id": 3,
+      "status": "maintenance",
+      "capacity": 20,
+      "facilities": ["Projector", "Sound System"]
+    }
+  ],
+  "bookings": [
+    {
+      "booking_id": 1,
+      "user_id": 2,
+      "room_id": 1,
+      "start_time": "2024-10-05T09:00:00",
+      "end_time": "2024-10-05T11:00:00",
+      "status": "approved"
+    },
+    {
+      "booking_id": 2,
+      "user_id": 3,
+      "room_id": 2,
+      "start_time": "2024-10-05T13:00:00",
+      "end_time": "2024-10-05T15:00:00",
+      "status": "approved"
+    },
+    {
+      "booking_id": 3,
+      "user_id": 2,
+      "room_id": 3,
+      "start_time": "2024-10-06T10:00:00",
+      "end_time": "2024-10-06T12:00:00",
+      "status": "pending"
+    }
+  ]
+}
