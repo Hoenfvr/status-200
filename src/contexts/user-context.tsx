@@ -28,13 +28,22 @@ export function UserProvider({ children }: UserProviderProps): React.JSX.Element
 
   const checkSession = React.useCallback(async (): Promise<void> => {
     try {
-      const { data, error } = await authClient.getUser();
+      // this lin old code
+      // const { data, error } = await authClient.getUser();
+      
+      // this lin new code
+      const response = await fetch('http://localhost:3005/users');
 
-      if (error) {
-        logger.error(error);
-        setState((prev) => ({ ...prev, user: null, error: 'Something went wrong', isLoading: false }));
-        return;
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
+      const data = await response.json();
+
+      // if (error) {
+      //   logger.error(error);
+      //   setState((prev) => ({ ...prev, user: null, error: 'Something went wrong', isLoading: false }));
+      //   return;
+      // }
 
       setState((prev) => ({ ...prev, user: data ?? null, error: null, isLoading: false }));
     } catch (err) {
@@ -46,7 +55,6 @@ export function UserProvider({ children }: UserProviderProps): React.JSX.Element
   React.useEffect(() => {
     checkSession().catch((err: unknown) => {
       logger.error(err);
-      // noop
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- Expected
   }, []);

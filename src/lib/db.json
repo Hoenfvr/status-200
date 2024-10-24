@@ -2,27 +2,27 @@
   "users": [
     {
       "user_id": 1,
-      "username": "admin",
+      "username": "admin1",
       "password": "1234",
       "user_type": "admin",
-      "firstname_eng": "Admiddn",
-      "lastname_eng": "Userdd"
+      "firstname": "Admiddn",
+      "lastname": "Userdd"
     },
     {
       "user_id": 2,
-      "username": "user1",
+      "username": "user11",
       "password": "user123",
       "user_type": "user",
-      "firstname_eng": "John",
-      "lastname_eng": "Doe"
+      "firstname": "John",
+      "lastname": "Doe"
     },
     {
       "user_id": 3,
-      "username": "user2",
+      "username": "user22",
       "password": "user456",
       "user_type": "user",
-      "firstname_eng": "Jane",
-      "lastname_eng": "Smith"
+      "firstname": "Jane",
+      "lastname": "Smith"
     }
   ],
   "buildings": [
@@ -60,7 +60,10 @@
       "floor_id": 1,
       "status": "available",
       "capacity": 10,
-      "facilities": ["Projector", "Whiteboard"]
+      "facilities": [
+        "Projector",
+        "Whiteboard"
+      ]
     },
     {
       "room_id": 2,
@@ -69,7 +72,10 @@
       "floor_id": 1,
       "status": "booked",
       "capacity": 15,
-      "facilities": ["Projector", "Conference Call"]
+      "facilities": [
+        "Projector",
+        "Conference Call"
+      ]
     },
     {
       "room_id": 3,
@@ -78,7 +84,9 @@
       "floor_id": 3,
       "status": "available",
       "capacity": 8,
-      "facilities": ["Whiteboard"]
+      "facilities": [
+        "Whiteboard"
+      ]
     },
     {
       "room_id": 4,
@@ -87,7 +95,10 @@
       "floor_id": 3,
       "status": "maintenance",
       "capacity": 20,
-      "facilities": ["Projector", "Sound System"]
+      "facilities": [
+        "Projector",
+        "Sound System"
+      ]
     }
   ],
   "bookings": [

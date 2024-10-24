@@ -19,13 +19,13 @@ import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 
 import { paths } from '@/paths';
-import { authClient } from '@/lib/auth/client';
+// import { authClient } from '@/lib/auth/client';
 import { useUser } from '@/hooks/use-user';
 
 const schema = zod.object({
   firstName: zod.string().min(1, { message: 'First name is required' }),
   lastName: zod.string().min(1, { message: 'Last name is required' }),
-  username: zod.string().min(1, { message: 'username is required' }),
+  username: zod.string().min(6, { message: 'username is required' }),
   password: zod.string().min(6, { message: 'Password should be at least 6 characters' }),
   terms: zod.boolean().refine((value) => value, 'You must accept the terms and conditions'),
 });
@@ -49,26 +49,44 @@ export function SignUpForm(): React.JSX.Element {
   } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
 
   const onSubmit = React.useCallback(
-    async (values: Values): Promise<void> => {
-      setIsPending(true);
+  async (values: Values): Promise<void> => {
+    setIsPending(true);
 
-      const { error } = await authClient.signUp(values);
+    try {
+      // ส่งข้อมูลไปยัง JSON Server
+      const response = await fetch('http://localhost:3005/users', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: Math.floor(Math.random() * 1000), // สร้าง user_id แบบสุ่ม
+          username: values.username,
+          password: values.password,
+          firstname: values.firstName,
+          lastname: values.lastName,
+          user_type: 'user', // กำหนด user_type เริ่มต้น
+        }),
+      });
 
-      if (error) {
-        setError('root', { type: 'server', message: error });
-        setIsPending(false);
-        return;
+      if (!response.ok) {
+        throw new Error('Failed to create user');
       }
 
-      // Refresh the auth state
+      // ทำการตรวจสอบสถานะหรือทำอย่างอื่นตามที่ต้องการ
       await checkSession?.();
 
-      // UserProvider, for this case, will not refresh the router
-      // After refresh, GuestGuard will handle the redirect
+      // Refresh the router
       router.refresh();
-    },
-    [checkSession, router, setError]
-  );
+    } catch (error) {
+      setError('root', { type: 'server', message: (error as Error).message });
+      setIsPending(false);
+      return;
+    }
+  },
+  [checkSession, router, setError]
+);
+
 
   return (
     <Stack spacing={3}>
