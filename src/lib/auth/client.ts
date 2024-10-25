@@ -139,8 +139,8 @@ class AuthClient {
 
       // Generate token and store in localStorage
       const token = generateToken();
+      console.log('token', token);
       localStorage.setItem('custom-auth-token', token);
-
       return {};
     } catch (error) {
       return { error: 'Error during authentication' };
