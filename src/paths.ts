@@ -10,5 +10,10 @@ export const paths = {
     room: '/admin/room',
     dashboard: '/admin/dashboard',
   },
+  user: {
+    calendar: '/user',
+    booking: '/user/booking',
+    bookingList: '/user/booking-list',
+  },
   errors: { notFound: '/errors/not-found' },
 } as const;

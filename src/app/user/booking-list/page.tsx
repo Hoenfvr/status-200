@@ -12,7 +12,7 @@ import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 import dayjs from 'dayjs';
 
 import { config } from '@/config';
-import BookingList from '@/components/admin/booking-list/booking-list';
+import BookingList from '@/components/user/booking-list/booking-list';
 
 export const metadata = { title: `Integrations | Dashboard | ${config.site.name}` } satisfies Metadata;
 

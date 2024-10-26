@@ -4,8 +4,8 @@ import Container from '@mui/material/Container';
 import GlobalStyles from '@mui/material/GlobalStyles';
 
 import { AuthGuard } from '@/components/auth/auth-guard';
-import { MainNav } from '@/components/admin/layout/main-nav';
-import { SideNav } from '@/components/admin/layout/side-nav';
+import { MainNav } from '@/components/user/layout/main-nav';
+import { SideNav } from '@/components/user/layout/side-nav';
 
 interface LayoutProps {
   children: React.ReactNode;

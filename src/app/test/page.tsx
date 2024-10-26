@@ -28,6 +28,8 @@ export default function Page(): React.JSX.Element {
     // Code ที่ทำงานฝั่ง server
     console.log("Running on server side");
   }
+
+  
   
   return (
     <>
