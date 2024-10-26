@@ -103,10 +103,10 @@ export function SideNav(): React.JSX.Element {
               <FontAwesomeIcon icon={faUser} size="lg" color="white" />
             </Box>
           </Avatar>
-          <Box sx={{pl:'6px'}} >
-            <Typography  variant="subtitle1">Welcome </Typography>
+          <Box sx={{ pl: '6px' }}>
+            <Typography variant="subtitle1">Welcome </Typography>
             <Typography color="text.secondary" variant="body2">
-              user_name {/* username will be change to value input*/}
+              Administrator {/* username will be change to value input*/}
             </Typography>
           </Box>
         </Box>
@@ -132,7 +132,7 @@ function renderNavItems({ items = [], pathname }: { items?: NavItemConfig[]; pat
   }, []);
 
   return (
-    <Stack component="ul" spacing={1} sx={{ bg: 'white',listStyle: 'none', m: 0, p: 0 }}>
+    <Stack component="ul" spacing={1} sx={{ bg: 'white', listStyle: 'none', m: 0, p: 0 }}>
       {children}
     </Stack>
   );

@@ -73,7 +73,7 @@ const integrations = [
 export default function Page(): React.JSX.Element {
   return (
     <>
-      <Typography sx={{pb:'30px'}} variant="h4">Booking List - Admin</Typography>
+      <Typography sx={{pb:'30px'}} variant="h4">Booking List</Typography>
       <BookingList />
     </>
   );

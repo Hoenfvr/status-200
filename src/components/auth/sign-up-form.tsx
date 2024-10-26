@@ -19,7 +19,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 
 import { paths } from '@/paths';
-// import { authClient } from '@/lib/auth/client';
+import { authClient } from '@/lib/auth/client';
 import { useUser } from '@/hooks/use-user';
 
 const schema = zod.object({
@@ -49,44 +49,26 @@ export function SignUpForm(): React.JSX.Element {
   } = useForm<Values>({ defaultValues, resolver: zodResolver(schema) });
 
   const onSubmit = React.useCallback(
-  async (values: Values): Promise<void> => {
-    setIsPending(true);
+    async (values: Values): Promise<void> => {
+      setIsPending(true);
 
-    try {
-      // ส่งข้อมูลไปยัง JSON Server
-      const response = await fetch('http://localhost:3005/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: Math.floor(Math.random() * 1000), // สร้าง user_id แบบสุ่ม
-          username: values.username,
-          password: values.password,
-          firstname: values.firstName,
-          lastname: values.lastName,
-          user_type: 'user', // กำหนด user_type เริ่มต้น
-        }),
-      });
+      const { error } = await authClient.signUp(values);
 
-      if (!response.ok) {
-        throw new Error('Failed to create user');
+      if (error) {
+        setError('root', { type: 'server', message: error });
+        setIsPending(false);
+        return;
       }
 
-      // ทำการตรวจสอบสถานะหรือทำอย่างอื่นตามที่ต้องการ
+      // Refresh the auth state
       await checkSession?.();
 
-      // Refresh the router
+      // UserProvider, for this case, will not refresh the router
+      // After refresh, GuestGuard will handle the redirect
       router.refresh();
-    } catch (error) {
-      setError('root', { type: 'server', message: (error as Error).message });
-      setIsPending(false);
-      return;
-    }
-  },
-  [checkSession, router, setError]
-);
-
+    },
+    [checkSession, router, setError]
+  );
 
   return (
     <Stack spacing={3}>

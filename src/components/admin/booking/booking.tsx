@@ -44,7 +44,7 @@ export default function Booking() {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={3}>
         <Card>
           <CardContent>
             <Typography variant="h6">Booking Details</Typography>
@@ -106,7 +106,7 @@ export default function Booking() {
         </Card>
       </Grid>
 
-      <Grid item xs={12} md={6}>
+      <Grid item xs={12} md={9}>
         {rooms.map((room) => (
           <Card key={room.id} style={{ marginBottom: '10px' }}>
             <CardContent style={{ display: 'flex', alignItems: 'center' }}>
