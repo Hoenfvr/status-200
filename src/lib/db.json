@@ -1,22 +1,22 @@
 {
   "users": [
     {
-      "user_id": 1,
       "username": "admin1",
       "password": "1234",
       "user_type": "admin",
       "firstname": "Admiddn",
       "lastname": "Userdd",
-      "id": "4c35"
+      "id": "4c35",
+      "token": "731eda5022c6973747fc0fa9"
     },
     {
-      "user_id": 2,
       "username": "user11",
       "password": "user123",
       "user_type": "user",
       "firstname": "John",
       "lastname": "Doe",
-      "id": "d757"
+      "id": "d757",
+      "token": "cc4c518f4313a07cb140b9fa"
     },
     {
       "user_id": 3,
@@ -25,7 +25,26 @@
       "user_type": "user",
       "firstname": "Jane",
       "lastname": "Smith",
-      "id": "09ca"
+      "id": "09ca",
+      "token": "565bc7dd473724deb16c1133"
+    },
+    {
+      "id": "a109",
+      "firstName": "aaaaaaaaaaa",
+      "lastName": "bbbbbbbbbbbb",
+      "username": "testtest1",
+      "password": "testtest1",
+      "terms": true,
+      "user_type": "user"
+    },
+    {
+      "id": "5e32",
+      "firstName": "wwwwwwwwwwww",
+      "lastName": "ssssssssss",
+      "username": "wwwwwwwwww",
+      "password": "sssssss",
+      "terms": true,
+      "user_type": "user"
     }
   ],
   "buildings": [

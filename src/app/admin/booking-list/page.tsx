@@ -14,8 +14,6 @@ import dayjs from 'dayjs';
 import { config } from '@/config';
 import BookingList from '@/components/admin/booking-list/booking-list';
 
-export const metadata = { title: `Integrations | Dashboard | ${config.site.name}` } satisfies Metadata;
-
 export default function Page(): React.JSX.Element {
   return (
     <>

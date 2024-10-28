@@ -29,7 +29,7 @@ const schema = zod.object({
 
 type Values = zod.infer<typeof schema>;
 
-const defaultValues = { username: 'admin1', password: '1234' } satisfies Values;
+const defaultValues = { username: 'user22', password: 'user456' } satisfies Values;
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
@@ -45,21 +45,28 @@ export function SignInForm(): React.JSX.Element {
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
       setIsPending(true);
-
       const { error } = await authClient.signInWithPassword(values);
-
+  
       if (error) {
         setError('root', { type: 'server', message: error });
         setIsPending(false);
         return;
       }
-
+  
       // Refresh the auth state
       await checkSession?.();
-
-      // UserProvider, for this case, will not refresh the router
-      // After refresh, GuestGuard will handle the redirect
-      router.refresh();
+      
+      // Ensure user role is available after checking session
+      const userRole = authClient.getUserRole();
+      console.log('userRole onSubmit : ', userRole)
+      
+      if (userRole === 'admin') {
+        router.push('/admin');
+      } else {
+        router.push('/user');
+      }
+  
+      setIsPending(false);
     },
     [checkSession, router, setError]
   );
