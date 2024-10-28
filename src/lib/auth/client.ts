@@ -8,91 +8,101 @@ function generateToken(): string {
   return Array.from(arr, (v) => v.toString(16).padStart(2, '0')).join('');
 }
 
-const user = {
-  id: 'USR-000',
-  avatar: '/assets/avatar.png',
-  firstName: 'Sofia',
-  lastName: 'Rivers',
-  email: 'sofia@devias.io',
-} satisfies User;
-
 export interface SignUpParams {
   firstName: string;
   lastName: string;
-  email: string;
+  username: string;
   password: string;
-}
-
-export interface SignInWithOAuthParams {
-  provider: 'google' | 'discord';
 }
 
 export interface SignInWithPasswordParams {
-  email: string;
+  username: string;
   password: string;
 }
 
-export interface ResetPasswordParams {
-  email: string;
-}
-
 class AuthClient {
-  async signUp(_: SignUpParams): Promise<{ error?: string }> {
-    // Make API request
-
-    // We do not handle the API, so we'll just generate a token and store it in localStorage.
-    const token = generateToken();
-    localStorage.setItem('custom-auth-token', token);
-
-    return {};
-  }
-
-  async signInWithOAuth(_: SignInWithOAuthParams): Promise<{ error?: string }> {
-    return { error: 'Social authentication not implemented' };
-  }
-
-  async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
-    const { email, password } = params;
-
-    // Make API request
-
-    // We do not handle the API, so we'll check if the credentials match with the hardcoded ones.
-    if (email !== 'sofia@devias.io' || password !== 'Secret1') {
-      return { error: 'Invalid credentials' };
+  // Sign up - you can implement if needed
+  async signUp(params: SignUpParams): Promise<{ error?: string }> {
+    try {
+      // เรียกใช้ API ด้วย fetch เพื่อเพิ่มข้อมูลผู้ใช้ใหม่
+      const response = await fetch("http://localhost:3005/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(params),  // แปลง params เป็น JSON เพื่อส่งไปยังเซิร์ฟเวอร์
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to create user");
+      }
+  
+      // สร้าง token สำหรับการ Authentication
+      const token = generateToken();
+      localStorage.setItem("custom-auth-token", token);
+  
+      return {};  // ส่งกลับว่างเพื่อแสดงว่าสำเร็จ
+    } catch (error) {
+      console.error("Sign up failed:", error);
+      return { error: error.message };  // ส่งกลับ error ในกรณีที่เกิดปัญหา
     }
+  }
+  
 
-    const token = generateToken();
-    localStorage.setItem('custom-auth-token', token);
+  // Sign in with password
+  async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
+    const { username, password } = params;
 
-    return {};
+    try {
+      // Fetch users from JSON server
+      const response = await fetch('http://localhost:3005/users');
+      const users: User[] = await response.json();
+
+      // Find the user with the matching credentials
+      const user = users.find(u => u.username === username && u.password === password);
+
+      if (!user) {
+        return { error: 'Invalid credentials' };
+      }
+
+      // Generate token and store in localStorage
+      const token = generateToken();
+      console.log('token', token);
+      localStorage.setItem('custom-auth-token', token);
+      return {};
+    } catch (error) {
+      return { error: 'Error during authentication' };
+    }
   }
 
-  async resetPassword(_: ResetPasswordParams): Promise<{ error?: string }> {
-    return { error: 'Password reset not implemented' };
-  }
-
-  async updatePassword(_: ResetPasswordParams): Promise<{ error?: string }> {
-    return { error: 'Update reset not implemented' };
-  }
-
+  // Get the current logged-in user based on token
   async getUser(): Promise<{ data?: User | null; error?: string }> {
-    // Make API request
-
-    // We do not handle the API, so just check if we have a token in localStorage.
     const token = localStorage.getItem('custom-auth-token');
 
     if (!token) {
       return { data: null };
     }
 
-    return { data: user };
+    try {
+      // Fetch users from JSON server
+      const response = await fetch('http://localhost:3005/users');
+      const users: User[] = await response.json();
+
+      // For simplicity, assume the first user matches (or extend logic to map tokens to users)
+      const user = users[0]; // You might implement token-user mapping
+
+      return { data: user || null };
+    } catch (error) {
+      return { error: 'Unable to fetch user data' };
+    }
   }
 
+  // Sign out
   async signOut(): Promise<{ error?: string }> {
     localStorage.removeItem('custom-auth-token');
-
     return {};
   }
 }
 
 export const authClient = new AuthClient();
+

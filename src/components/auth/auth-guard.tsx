@@ -17,39 +17,46 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
   const { user, error, isLoading } = useUser();
   const [isChecking, setIsChecking] = React.useState<boolean>(true);
 
-  const checkPermissions = async (): Promise<void> => {
+  // ตรวจสอบสิทธิ์และเปลี่ยนหน้า
+  const checkPermissions = React.useCallback(async (): Promise<void> => {
+    // ถ้ายังโหลดอยู่ ก็ไม่ต้องทำอะไร
     if (isLoading) {
       return;
     }
 
+    // ถ้าเกิดข้อผิดพลาด ให้หยุดการตรวจสอบ
     if (error) {
       setIsChecking(false);
       return;
     }
 
+    // ถ้า user ไม่ล็อกอิน ให้ redirect ไปที่หน้า sign in
     if (!user) {
       logger.debug('[AuthGuard]: User is not logged in, redirecting to sign in');
       router.replace(paths.auth.signIn);
       return;
     }
 
+    // ถ้า user ล็อกอินแล้ว ให้หยุดการตรวจสอบ
     setIsChecking(false);
-  };
+  }, [isLoading, user, error, router]);
 
   React.useEffect(() => {
-    checkPermissions().catch(() => {
-      // noop
+    checkPermissions().catch((err) => {
+      logger.error('AuthGuard error:', err);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- Expected
-  }, [user, error, isLoading]);
+  }, [checkPermissions]);
 
-  if (isChecking) {
+  // ถ้ายังตรวจสอบอยู่ (isChecking), แสดง null (หรือแสดง spinner/loading ตามต้องการ)
+  if (isChecking || isLoading) {
     return null;
   }
 
+  // ถ้ามี error ให้แสดงข้อผิดพลาด
   if (error) {
     return <Alert color="error">{error}</Alert>;
   }
 
+  // ถ้าทุกอย่างโอเค ให้ render เนื้อหาของหน้า
   return <React.Fragment>{children}</React.Fragment>;
 }
