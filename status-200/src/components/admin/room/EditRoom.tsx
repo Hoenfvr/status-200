@@ -51,7 +51,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
 
     const getMeetingRoom = async () => {
       try {
-        const response = await axios.get<RoomInputs>(`http://localhost/STATUS-200/meeting_room/${[id]}`);
+        const response = await axios.get<RoomInputs>(`http://localhost/STATUS-200/meeting_room/${id}`);
         setInputs(response.data);
       } catch (error) {
         setError('Error fetching meeting room data!');
@@ -65,7 +65,8 @@ function EditRoom({id, onClose }: EditRoomProps) {
   }, [id]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = event.target;
+    const  name  = event.target.name;
+    const  value  = event.target.value;
     setInputs((values) => ({ ...values, [name]: value }));
   };
 

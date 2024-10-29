@@ -201,6 +201,9 @@ function EditEmployee({ employeeId, onClose }: EditEmpProps) {
               </td>
             </tr>
             <tr>
+                <td>
+                <label>Update By:</label>
+              </td>
               <td>
                 <input
                   type="text"
