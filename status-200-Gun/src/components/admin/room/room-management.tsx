@@ -30,7 +30,7 @@ function RoomManagement() {
 
   const getRoom = async () => {
     try {
-      const response = await axios.get<Room[]>('http://localhost/STATUS-200-Gun/index.php/');
+      const response = await axios.get<Room[]>('http://localhost/STATUS-200/index.php/');
       setRooms(response.data);
     } catch (error) {
       console.error('There was an error fetching the room data:', error);
@@ -48,7 +48,7 @@ function RoomManagement() {
     const confirmDelete = window.confirm('Are you sure you want to delete this room?');
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost/STATUS-200-Gun/meeting_room/${id}`);
+        await axios.delete(`http://localhost/STATUS-200/meeting_room/${id}`);
         setRooms(rooms.filter((room) => room.id !== id));
       } catch (error) {
         console.error('Error deleting room:', error);

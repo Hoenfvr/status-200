@@ -24,7 +24,7 @@ function CreateRoom({ onClose }: { onClose: () => void }) {
     const fetchBuildings = async () => {
       setLoading(true);
       try {
-        const response = await axios.get('http://localhost/STATUS-200-Gun/buildings.php');
+        const response = await axios.get('http://localhost/STATUS-200/buildings.php');
         console.log('Raw response from API:', response.data); // Log the raw response
         if (Array.isArray(response.data)) {
           setBuildings(response.data);
@@ -70,7 +70,7 @@ function CreateRoom({ onClose }: { onClose: () => void }) {
     setLoading(true); // Set loading state to true while submitting
 
     try {
-      const response = await axios.post('http://localhost/STATUS-200-Gun/meeting_room.php', inputs);
+      const response = await axios.post('http://localhost/STATUS-200/meeting_room.php', inputs);
       console.log('Response from API:', response.data);
       alert(response.data.message);
       if (response.data.status === 1) {

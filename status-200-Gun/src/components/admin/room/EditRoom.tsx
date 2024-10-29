@@ -41,7 +41,7 @@ function EditRoom({ roomId, onClose }: EditRoomProps) {/*เมื่อกด�
   useEffect(() => {
     const fetchBuildings = async () => {
       try {
-        const response = await axios.get<Building[]>('http://localhost/STATUS-200-Gun/buildings.php');
+        const response = await axios.get<Building[]>('http://localhost/STATUS-200/buildings.php');
         setBuildings(response.data);
       } catch (error) {
         setError('Error fetching buildings!');
@@ -50,7 +50,7 @@ function EditRoom({ roomId, onClose }: EditRoomProps) {/*เมื่อกด�
 
     const getMeetingRoom = async () => {
       try {
-        const response = await axios.get<RoomInputs>(`http://localhost/STATUS-200-Gun/meeting_room/${roomId}`);
+        const response = await axios.get<RoomInputs>(`http://localhost/STATUS-200/meeting_room/${roomId}`);
         setInputs(response.data);
       } catch (error) {
         setError('Error fetching meeting room data!');
@@ -71,7 +71,7 @@ function EditRoom({ roomId, onClose }: EditRoomProps) {/*เมื่อกด�
   const handleUpdateData = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await axios.put(`http://localhost/STATUS-200-Gun/meeting_room/${roomId}/update`, inputs);
+      await axios.put(`http://localhost/STATUS-200/meeting_room/${roomId}/update`, inputs);
       onClose(); // Close modal after updating
     } catch (error) {
       setError('Error updating meeting room data!');

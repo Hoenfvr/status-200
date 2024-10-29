@@ -1,11 +1,18 @@
 <?php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
 
-include 'connectphp.php';
+include 'connecthp.php';
+
+if (!isset($conn)) {
+    die("Database connection not established.");
+}
+
+// Rest of your code
 
 $method = $_SERVER['REQUEST_METHOD'];
 $path = explode('/', $_SERVER['REQUEST_URI']);
@@ -72,10 +79,20 @@ switch ($method) {
         echo json_encode($response);
         break;
 
-    case "PUT":
-        if (isset($path[3]) && is_numeric($path[3])) {
-            $building = json_decode(file_get_contents('php://input'));
-
+    // Example: Enhanced error checking for the PUT method
+case "PUT":
+    if (isset($path[3]) && is_numeric($path[3])) {
+        $building = json_decode(file_get_contents('php://input'));
+        
+        // Validate input data here if necessary
+        
+        $checkSql = "SELECT * FROM building WHERE id = :id";
+        $checkStmt = $conn->prepare($checkSql);
+        $checkStmt->bindParam(':id', $path[3]);
+        $checkStmt->execute();
+        
+        if ($checkStmt->rowCount() > 0) {
+            // Proceed with update
             $sql = "UPDATE building SET building_name = :building_name, floor_count = :floor_count, 
                     status_active = :status_active, create_by = :create_by, create_date = :create_date, 
                     update_by = :update_by, update_date = :update_date 
@@ -97,9 +114,13 @@ switch ($method) {
                 $response = ['status' => 0, 'message' => 'Failed to update record.'];
             }
         } else {
-            $response = ['status' => 0, 'message' => 'Invalid ID.'];
+            $response = ['status' => 0, 'message' => 'Record not found.'];
         }
-        echo json_encode($response);
-        break;
+    } else {
+        $response = ['status' => 0, 'message' => 'Invalid ID.'];
+    }
+    echo json_encode($response);
+    break;
+
 }
 ?>
