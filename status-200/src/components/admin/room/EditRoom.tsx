@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-interface RoomInputs {
+
+
+
+
+/* interface RoomInputs {
   room_name: string;
   room_type: string;
   room_size: string;
@@ -10,7 +14,7 @@ interface RoomInputs {
   status_active: string;
   update_by: string;
   update_date: string;
-}
+} */
 
 interface Building {
   id: string;
@@ -24,7 +28,7 @@ interface EditRoomProps {
 
 function EditRoom({id, onClose }: EditRoomProps) {
   /*เมื่อกดปุ่ม Edit แล้วให้แสดง popup form EditRoom*/
-  const [inputs, setInputs] = useState<RoomInputs>({
+  const [inputs, setInputs] = useState({
     room_name: '',
     room_type: '',
     room_size: '',
@@ -51,7 +55,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
 
     const getMeetingRoom = async () => {
       try {
-        const response = await axios.get<RoomInputs>(`http://localhost/STATUS-200/meeting_room/${id}`);
+        const response = await axios.get(`http://localhost/STATUS-200/meeting_room/${id}`);
         setInputs(response.data);
       } catch (error) {
         setError('Error fetching meeting room data!');
@@ -67,7 +71,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const  name  = event.target.name;
     const  value  = event.target.value;
-    setInputs((values) => ({ ...values, [name]: value }));
+    setInputs((values) => ({ ...values, [name]: value || '' }));
   };
 
   const handleUpdateData = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -99,7 +103,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
                   type="text"
                   name="room_name"
                   className="text-input"
-                  value={inputs.room_name}
+                  value={inputs.room_name|| ''}
                   onChange={handleChange}
                   required
                 />
@@ -114,7 +118,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
                   type="text"
                   name="room_type"
                   className="text-input"
-                  value={inputs.room_type}
+                  value={inputs.room_type|| ''}
                   onChange={handleChange}
                   required
                 />
@@ -129,7 +133,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
                   type="number"
                   name="room_size"
                   className="text-input"
-                  value={inputs.room_size}
+                  value={inputs.room_size|| ''}
                   onChange={handleChange}
                   required
                 />
@@ -144,7 +148,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
                   type="number"
                   name="floor"
                   className="text-input"
-                  value={inputs.floor}
+                  value={inputs.floor|| ''}
                   onChange={handleChange}
                   required
                 />
@@ -155,7 +159,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
                 <label>Building:</label>
               </td>
               <td>
-                <select name="building_id" value={inputs.building_id} onChange={handleChange} required>
+                <select name="building_id" value={inputs.building_id|| ''} onChange={handleChange} required>
                   <option value="">Select a building</option>
                   {buildings.length > 0 ? (
                     buildings.map((building) => (
@@ -174,7 +178,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
                 <label>Status Active:</label>
               </td>
               <td>
-                <select name="status_active" value={inputs.status_active} onChange={handleChange} required>
+                <select name="status_active" value={inputs.status_active|| ''} onChange={handleChange} required>
                   <option value="">Select status</option>
                   <option value="0">Active</option>
                   <option value="1">Inactive</option>
@@ -190,7 +194,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
                   type="text"
                   name="update_by"
                   className="text-input"
-                  value={inputs.update_by}
+                  value={inputs.update_by|| ''}
                   onChange={handleChange}
                   required
                 />
@@ -205,7 +209,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
                   type="date"
                   name="update_date"
                   className="text-input"
-                  value={inputs.update_date}
+                  value={inputs.update_date|| ''}
                   onChange={handleChange}
                   required
                 />

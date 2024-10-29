@@ -118,11 +118,9 @@ function RoomManagement() {
                   <td>{meeting_room.update_by}</td>
                   <td>{meeting_room.update_date}</td>
                   <td>
-                    <Link href={`/RoomManagement/${meeting_room.id}/update`}>
                       <button className="btn btn-warning" onClick={() => handleEditRoom(meeting_room.id)}>
-                        Edit1
+                        Edit
                       </button>
-                    </Link>
                   </td>
                   <td>
                     <button className="btn btn-danger" onClick={() => handleDelete(meeting_room.id)}>

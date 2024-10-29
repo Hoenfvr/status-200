@@ -28,49 +28,57 @@ switch ($method) {
         break;
 
     case "POST":
-        $meeting_room = json_decode(file_get_contents('php://input'));
+    $meeting_room = json_decode(file_get_contents('php://input'));
 
-        if (!isset($meeting_room->create_date) || empty($meeting_room->create_date)) {
-            $meeting_room->create_date = date('Y-m-d');
-        } else {
-            $meeting_room->create_date = date('Y-m-d', strtotime($meeting_room->create_date));
-        }
+    if (!isset($meeting_room->create_date) || empty($meeting_room->create_date)) {
+        $meeting_room->create_date = date('Y-m-d');
+    } else {
+        $meeting_room->create_date = date('Y-m-d', strtotime($meeting_room->create_date));
+    }
 
-        $building_id = $meeting_room->building_id;
-        $sql_check = "SELECT id FROM building WHERE id = :id"; // Corrected the table name
-        $stmt_check = $conn->prepare($sql_check);
-        $stmt_check->bindParam(':id', $building_id);
-        $stmt_check->execute();
-        if ($stmt_check->rowCount() == 0) {
-            $response = ['status' => 0, 'message' => 'Invalid Building ID.'];
-            echo json_encode($response);
-            exit;
-        }
-
-        $sql = "INSERT INTO meeting_room(id, room_name, room_type, room_size, floor, building_id, status_active, create_by, create_date, 
-                update_by, update_date) 
-                VALUES(null, :room_name, :room_type, :room_size, :floor, :building_id, :status_active, :create_by, :create_date, 
-                :update_by, :update_date)";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':room_name', $meeting_room->room_name);
-        $stmt->bindParam(':room_type', $meeting_room->room_type);
-        $stmt->bindParam(':room_size', $meeting_room->room_size);
-        $stmt->bindParam(':floor', $meeting_room->floor);
-        $stmt->bindParam(':building_id', $meeting_room->building_id);
-        $stmt->bindParam(':status_active', $meeting_room->status_active);
-        $stmt->bindParam(':create_by', $meeting_room->create_by);
-        $stmt->bindParam(':create_date', $meeting_room->create_date);
-        $stmt->bindParam(':update_by', $meeting_room->update_by);
-        $stmt->bindParam(':update_date', $meeting_room->update_date);
-
-        if ($stmt->execute()) {
-            $response = ['status' => 1, 'message' => 'Record created successfully.'];
-        } else {
-            $response = ['status' => 0, 'message' => 'Failed to create record.'];
-        }
+    // ตรวจสอบว่ามี building_id หรือไม่
+    if (!isset($meeting_room->building_id) || empty($meeting_room->building_id)) {
+        $response = ['status' => 0, 'message' => 'Building ID is required.'];
         echo json_encode($response);
-        break;
+        exit;
+    }
+
+    $building_id = $meeting_room->building_id;
+    $sql_check = "SELECT id FROM building WHERE id = :id";
+    $stmt_check = $conn->prepare($sql_check);
+    $stmt_check->bindParam(':id', $building_id);
+    $stmt_check->execute();
+    if ($stmt_check->rowCount() == 0) {
+        $response = ['status' => 0, 'message' => 'Invalid Building ID.'];
+        echo json_encode($response);
+        exit;
+    }
+
+    $sql = "INSERT INTO meeting_room(id, room_name, room_type, room_size, floor, building_id, status_active, create_by, create_date, 
+            update_by, update_date) 
+            VALUES(null, :room_name, :room_type, :room_size, :floor, :building_id, :status_active, :create_by, :create_date, 
+            :update_by, :update_date)";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':room_name', $meeting_room->room_name);
+    $stmt->bindParam(':room_type', $meeting_room->room_type);
+    $stmt->bindParam(':room_size', $meeting_room->room_size);
+    $stmt->bindParam(':floor', $meeting_room->floor);
+    $stmt->bindParam(':building_id', $meeting_room->building_id);
+    $stmt->bindParam(':status_active', $meeting_room->status_active);
+    $stmt->bindParam(':create_by', $meeting_room->create_by);
+    $stmt->bindParam(':create_date', $meeting_room->create_date);
+    $stmt->bindParam(':update_by', $meeting_room->update_by);
+    $stmt->bindParam(':update_date', $meeting_room->update_date);
+
+    if ($stmt->execute()) {
+        $response = ['status' => 1, 'message' => 'Record created successfully.'];
+    } else {
+        $response = ['status' => 0, 'message' => 'Failed to create record.'];
+    }
+    echo json_encode($response);
+    break;
+
 
     case "DELETE":
         if (isset($path[3]) && is_numeric($path[3])) {
@@ -127,11 +135,11 @@ switch ($method) {
             $stmt->bindParam(':floor', $meeting_room->floor);
             $stmt->bindParam(':building_id', $meeting_room->building_id);
             $stmt->bindParam(':status_active', $meeting_room->status_active);
-            $stmt->bindParamindParam(':create_by', $meeting_room->create_by);
+            $stmt->bindParam(':create_by', $meeting_room->create_by);
             $stmt->bindParam(':create_date', $meeting_room->create_date);
             $stmt->bindParam(':update_by', $meeting_room->update_by);
-            $stmt->bindParam(':create_date', $meeting_room->update_date);
-            $stmt->bindParam(':update_date', $me(':id', $path[3]));
+            $stmt->bindParam(':update_date', $meeting_room->update_date);
+            $stmt->bindParam(':id', $meeting_room->id);
 
             if ($stmt->execute()) {
                 http_response_code(200);

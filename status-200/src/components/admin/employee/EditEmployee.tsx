@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
+
+
+
+
 interface EmpInputs {
   id: string;
   fnameth: string;
@@ -19,11 +23,11 @@ interface Department {
 }
 
 interface EditEmpProps {
-  employeeId: string;
+  id: string;
   onClose: () => void;
 }
 
-function EditEmployee({ employeeId, onClose }: EditEmpProps) {
+function EditEmployee({ id, onClose }: EditEmpProps) {
   /*เมื่อกดปุ่ม Edit แล้วให้แสดง popup form EditRoom*/
   const [inputs, setInputs] = useState<EmpInputs>({
     id: '',
@@ -53,7 +57,7 @@ function EditEmployee({ employeeId, onClose }: EditEmpProps) {
 
     const getMeetingEmp = async () => {
       try {
-        const response = await axios.get<EmpInputs>(`http://localhost/STATUS-200/employee_info/${employeeId}`);
+        const response = await axios.get<EmpInputs>(`http://localhost/STATUS-200/employee_info/${id}`);
         setInputs(response.data);
       } catch (error) {
         setError('Error fetching meeting room data!');
@@ -64,7 +68,7 @@ function EditEmployee({ employeeId, onClose }: EditEmpProps) {
 
     fetchDepartment();
     getMeetingEmp();
-  }, [employeeId]);
+  }, [id]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
@@ -74,7 +78,7 @@ function EditEmployee({ employeeId, onClose }: EditEmpProps) {
   const handleUpdateData = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await axios.put(`http://localhost/STATUS-200/meeting_room/${employeeId}/update`, inputs);
+      await axios.put(`http://localhost/STATUS-200/employee_info/${id}/update`, inputs);
       onClose(); // Close modal after updating
     } catch (error) {
       setError('Error updating meeting room data!');

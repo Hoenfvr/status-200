@@ -116,11 +116,9 @@ const EmployeeManagement: React.FC = () => {
                   <td>{employee.update_by}</td>
                   <td>{employee.update_date}</td>
                   <td>
-                    <Link href={`employee/${employee.id}/update`}>
                       <button className="btn btn-warning" onClick={() => handleEditEmployee(employee.id)}>
                         Edit
-                      </button>
-                    </Link>
+                      </button>                 
                   </td>
                   <td>
                     <button className="btn btn-danger" onClick={() => handleDelete(employee.id)}>
@@ -145,7 +143,7 @@ const EmployeeManagement: React.FC = () => {
               X
             </button>
             {editEmployeeId ? (
-              <EditEmployee employeeId={editEmployeeId} onClose={handleCloseModal} />
+              <EditEmployee id={editEmployeeId} onClose={handleCloseModal} />
             ) : (
               <CreateEmployee onClose={handleCloseModal} />
             )}
