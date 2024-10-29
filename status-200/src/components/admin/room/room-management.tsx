@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import axios from 'axios';
 
 import CreateRoom from './CreateRoom';
 import EditRoom from './EditRoom'; // import EditRoom
+
 
 interface Room {
   id: string;
@@ -96,34 +98,34 @@ function RoomManagement() {
               <th>Created Date</th>
               <th>Updated By</th>
               <th>Updated Date</th>
-              <th>Edit</th>
-              <th>Delete</th>
+              {/* <th>Edit</th>
+              <th>Delete</th> */}
             </tr>
           </thead>
           <tbody>
             {rooms.length > 0 ? (
-              rooms.map((room) => (
-                <tr key={room.id}>
-                  <td>{room.id}</td>
-                  <td>{room.room_name}</td>
-                  <td>{room.room_type}</td>
-                  <td>{room.room_size}</td>
-                  <td>{room.floor}</td>
-                  <td>{room.building_id}</td>
-                  <td>{room.status_active}</td>
-                  <td>{room.create_by}</td>
-                  <td>{room.create_date}</td>
-                  <td>{room.update_by}</td>
-                  <td>{room.update_date}</td>
+              rooms.map((meeting_room) => (
+                <tr key={meeting_room.id}>
+                  <td>{meeting_room.id}</td>
+                  <td>{meeting_room.room_name}</td>
+                  <td>{meeting_room.room_type}</td>
+                  <td>{meeting_room.room_size}</td>
+                  <td>{meeting_room.floor}</td>
+                  <td>{meeting_room.building_id}</td>
+                  <td>{meeting_room.status_active}</td>
+                  <td>{meeting_room.create_by}</td>
+                  <td>{meeting_room.create_date}</td>
+                  <td>{meeting_room.update_by}</td>
+                  <td>{meeting_room.update_date}</td>
                   <td>
-                    <Link href={`listroom/${room.id}/update`}>
-                      <button className="btn btn-warning" onClick={() => handleEditRoom(room.id)}>
-                        Edit
+                    <Link href={`/RoomManagement/${meeting_room.id}/update`}>
+                      <button className="btn btn-warning" onClick={() => handleEditRoom(meeting_room.id)}>
+                        Edit1
                       </button>
                     </Link>
                   </td>
                   <td>
-                    <button className="btn btn-danger" onClick={() => handleDelete(room.id)}>
+                    <button className="btn btn-danger" onClick={() => handleDelete(meeting_room.id)}>
                       Delete
                     </button>
                   </td>

@@ -117,7 +117,7 @@ function CreateRoom({ onClose }: { onClose: () => void }) {
             {buildings.length > 0 ? (
               buildings.map((building) => (
                 <option key={building.id} value={building.id}>
-                  {building.name} {/* Adjust based on your building object structure */}
+                  {building.id} {/* Adjust based on your building object structure */}
                 </option>
               ))
             ) : (

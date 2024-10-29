@@ -94,11 +94,13 @@ export default function Booking() {
               InputLabelProps={{ shrink: true }}
             />
 
-          <Typography variant="h6" style={{ marginTop: '10px' }}>Type Room</Typography>
-          <RadioGroup row name="type" value={formData.type} onChange={handleChange} style={{ marginTop: '10px' }}>
-            <FormControlLabel value="Normal" control={<Radio />} label="Normal" />
-            <FormControlLabel value="VIP" control={<Radio />} label="VIP" />
-          </RadioGroup>
+            <Typography variant="h6" style={{ marginTop: '10px' }}>
+              Type Room
+            </Typography>
+            <RadioGroup row name="type" value={formData.type} onChange={handleChange} style={{ marginTop: '10px' }}>
+              <FormControlLabel value="Normal" control={<Radio />} label="Normal" />
+              <FormControlLabel value="VIP" control={<Radio />} label="VIP" />
+            </RadioGroup>
             <Button style={{ marginTop: '10px' }} variant="contained" color="primary" onClick={handleSave} fullWidth>
               Save
             </Button>
