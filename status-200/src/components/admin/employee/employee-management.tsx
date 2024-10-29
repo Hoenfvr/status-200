@@ -4,12 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 
-
-
-
-
-//import CreateEmployee from './CreateEmployee'; // CreateEmployee component to handle employee creation
-//import EditEmployee from './EditEmployee'; // EditEmployee component to handle employee editing
+import CreateEmployee from './CreateEmployee';
+import EditEmployee from './EditEmployee';
 
 interface Employee {
   id: string;
@@ -25,7 +21,7 @@ interface Employee {
   update_date: string;
 }
 
-function EmployeeManagement() {
+const EmployeeManagement: React.FC = () => {
   const [employee_info, setEmployees] = useState<Employee[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +49,7 @@ function EmployeeManagement() {
     if (confirmDelete) {
       try {
         await axios.delete(`http://localhost/STATUS-200/employee_info/${id}`);
-        setEmployees(employee_info.filter((employee_info) => employee_info.id !== id));
+        setEmployees(employee_info.filter((employee) => employee.id !== id));
       } catch (error) {
         console.error('Error deleting employee:', error);
         setError('Failed to delete employee. Please try again later.');
@@ -72,7 +68,7 @@ function EmployeeManagement() {
 
   const handleEditEmployee = (id: string) => {
     setEditEmployeeId(id);
-    handleOpenModal(); // Open modal when editing an employee
+    handleOpenModal();
   };
 
   return (
@@ -106,28 +102,28 @@ function EmployeeManagement() {
           </thead>
           <tbody>
             {employee_info.length > 0 ? (
-              employee_info.map((employee_info) => (
-                <tr key={employee_info.id}>
-                  <td>{employee_info.id}</td>
-                  <td>{employee_info.fnameth}</td>
-                  <td>{employee_info.lnameth}</td>
-                  <td>{employee_info.fnameen}</td>
-                  <td>{employee_info.lnameen}</td>
-                  <td>{employee_info.position}</td>
-                  <td>{employee_info.department_id}</td>
-                  <td>{employee_info.create_by}</td>
-                  <td>{employee_info.create_date}</td>
-                  <td>{employee_info.update_by}</td>
-                  <td>{employee_info.update_date}</td>
+              employee_info.map((employee) => (
+                <tr key={employee.id}>
+                  <td>{employee.id}</td>
+                  <td>{employee.fnameth}</td>
+                  <td>{employee.lnameth}</td>
+                  <td>{employee.fnameen}</td>
+                  <td>{employee.lnameen}</td>
+                  <td>{employee.position}</td>
+                  <td>{employee.department_id}</td>
+                  <td>{employee.create_by}</td>
+                  <td>{employee.create_date}</td>
+                  <td>{employee.update_by}</td>
+                  <td>{employee.update_date}</td>
                   <td>
-                    <Link href={`employee/${employee_info.id}/update`}>
-                      <button className="btn btn-warning" onClick={() => handleEditEmployee(employee_info.id)}>
+                    <Link href={`employee/${employee.id}/update`}>
+                      <button className="btn btn-warning" onClick={() => handleEditEmployee(employee.id)}>
                         Edit
                       </button>
                     </Link>
                   </td>
                   <td>
-                    <button className="btn btn-danger" onClick={() => handleDelete(employee_info.id)}>
+                    <button className="btn btn-danger" onClick={() => handleDelete(employee.id)}>
                       Delete
                     </button>
                   </td>
@@ -142,22 +138,22 @@ function EmployeeManagement() {
         </table>
       )}
 
-      {/* {isModalOpen && (
+      {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
             <button onClick={handleCloseModal} className="close-modal">
               X
             </button>
             {editEmployeeId ? (
-              //<EditEmployee employeeId={editEmployeeId} onClose={handleCloseModal} />
+              <EditEmployee employeeId={editEmployeeId} onClose={handleCloseModal} />
             ) : (
-              //<CreateEmployee onClose={handleCloseModal} />
+              <CreateEmployee onClose={handleCloseModal} />
             )}
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
-}
+};
 
 export default EmployeeManagement;

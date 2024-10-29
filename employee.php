@@ -45,20 +45,19 @@ switch ($method) {
             $employee_info->create_date = date('Y-m-d H:i:s', strtotime($employee_info->create_date));
         }
 
-        // Validate building_id
-        if (!isset($employee_info->building_id) || empty($employee_info->building_id)) {
-            $response = ['status' => 0, 'message' => 'Building ID is required.'];
+        if (!isset($employee_info->department_id) || empty($employee_info->department_id)) {
+            $response = ['status' => 0, 'message' => 'Department ID is required.'];
             echo json_encode($response);
             exit;
         }
 
-        $building_id = $employee_info->building_id;
-        $sql_check = "SELECT id FROM building WHERE id = :id"; 
+        $department_id = $employee_info->department_id;
+        $sql_check = "SELECT id FROM department WHERE id = :id"; 
         $stmt_check = $conn->prepare($sql_check);
-        $stmt_check->bindParam(':id', $building_id);
+        $stmt_check->bindParam(':id', $department_id);
         $stmt_check->execute();
         if ($stmt_check->rowCount() == 0) {
-            $response = ['status' => 0, 'message' => 'Invalid Building ID.'];
+            $response = ['status' => 0, 'message' => 'Invalid department ID.'];
             echo json_encode($response);
             exit;
         }
@@ -112,26 +111,26 @@ switch ($method) {
 
         $employee_info = json_decode(file_get_contents('php://input'));
 
-        if (!isset($employee_info->create_date) || empty($employee_info->create_date)) {
-            $employee_info->create_date = date('Y-m-d H:i:s');
+        if (!isset($employee_info->update_date) || empty($employee_info->update_date)) {
+            $employee_info->update_date = date('Y-m-d H:i:s');
         } else {
-            $employee_info->create_date = date("Y-m-d H:i:s", strtotime($employee_info->create_date));
+            $employee_info->update_date = date("Y-m-d H:i:s", strtotime($employee_info->update_date));
         }
 
         // Validate building_id
-        if (!isset($employee_info->building_id) || empty($employee_info->building_id)) {
-            $response = ['status' => 0, 'message' => 'Building ID is required.'];
+        if (!isset($employee_info->department_id) || empty($employee_info->department_id)) {
+            $response = ['status' => 0, 'message' => 'Department ID is required.'];
             echo json_encode($response);
             exit;
         }
 
-        $building_id = $employee_info->building_id;
-        $sql_check = "SELECT id FROM building WHERE id = :id"; 
+        $department_id = $employee_info->department_id;
+        $sql_check = "SELECT id FROM department WHERE id = :id"; 
         $stmt_check = $conn->prepare($sql_check);
-        $stmt_check->bindParam(':id', $building_id);
+        $stmt_check->bindParam(':id', $department_id);
         $stmt_check->execute();
         if ($stmt_check->rowCount() == 0) {
-            $response = ['status' => 0, 'message' => 'Invalid Building ID.'];
+            $response = ['status' => 0, 'message' => 'Invalid department ID.'];
             echo json_encode($response);
             exit;
         }

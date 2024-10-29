@@ -1,57 +1,59 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
-interface RoomInputs {
-  room_name: string;
-  room_type: string;
-  room_size: string;
-  floor: string;
-  building_id: string;
-  status_active: string;
+interface EmpInputs {
+  id: string;
+  fnameth: string;
+  lnameth: string;
+  fnameen: string;
+  lnameen: string;
+  position: string;
+  department_id: string;
   update_by: string;
   update_date: string;
 }
 
-interface Building {
+interface Department {
   id: string;
   name: string;
 }
 
-interface EditRoomProps {
-  id: string;
+interface EditEmpProps {
+  employeeId: string;
   onClose: () => void;
 }
 
-function EditRoom({id, onClose }: EditRoomProps) {
+function EditEmployee({ employeeId, onClose }: EditEmpProps) {
   /*เมื่อกดปุ่ม Edit แล้วให้แสดง popup form EditRoom*/
-  const [inputs, setInputs] = useState<RoomInputs>({
-    room_name: '',
-    room_type: '',
-    room_size: '',
-    floor: '',
-    building_id: '',
-    status_active: '',
+  const [inputs, setInputs] = useState<EmpInputs>({
+    id: '',
+    fnameth: '',
+    lnameth: '',
+    fnameen: '',
+    lnameen: '',
+    position: '',
+    department_id: '',
     update_by: '',
     update_date: new Date().toISOString().split('T')[0],
   });
 
-  const [buildings, setBuildings] = useState<Building[]>([]);
+  const [department, setDepartment] = useState<Department[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchBuildings = async () => {
+    const fetchDepartment = async () => {
       try {
-        const response = await axios.get<Building[]>('http://localhost/STATUS-200/buildings.php');
-        setBuildings(response.data);
+        const response = await axios.get<Department[]>('http://localhost/STATUS-200/department.php');
+        setDepartment(response.data);
       } catch (error) {
-        setError('Error fetching buildings!');
+        setError('Error fetching Department!');
       }
     };
 
-    const getMeetingRoom = async () => {
+    const getMeetingEmp = async () => {
       try {
-        const response = await axios.get<RoomInputs>(`http://localhost/STATUS-200/meeting_room/${[id]}`);
+        const response = await axios.get<EmpInputs>(`http://localhost/STATUS-200/employee_info/${employeeId}`);
         setInputs(response.data);
       } catch (error) {
         setError('Error fetching meeting room data!');
@@ -60,9 +62,9 @@ function EditRoom({id, onClose }: EditRoomProps) {
       }
     };
 
-    fetchBuildings();
-    getMeetingRoom();
-  }, [id]);
+    fetchDepartment();
+    getMeetingEmp();
+  }, [employeeId]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
@@ -72,7 +74,7 @@ function EditRoom({id, onClose }: EditRoomProps) {
   const handleUpdateData = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await axios.put(`http://localhost/STATUS-200/meeting_room/${id}/update`, inputs);
+      await axios.put(`http://localhost/STATUS-200/meeting_room/${employeeId}/update`, inputs);
       onClose(); // Close modal after updating
     } catch (error) {
       setError('Error updating meeting room data!');
@@ -85,20 +87,20 @@ function EditRoom({id, onClose }: EditRoomProps) {
 
   return (
     <div>
-      <h1>Update Meeting Room</h1>
+      <h1>Update Employee</h1>
       <form onSubmit={handleUpdateData}>
         <table>
           <tbody>
             <tr>
               <td>
-                <label>Room Name:</label>
+                <label>ID:</label>
               </td>
               <td>
                 <input
                   type="text"
-                  name="room_name"
+                  name="id"
                   className="text-input"
-                  value={inputs.room_name}
+                  value={inputs.id}
                   onChange={handleChange}
                   required
                 />
@@ -106,14 +108,14 @@ function EditRoom({id, onClose }: EditRoomProps) {
             </tr>
             <tr>
               <td>
-                <label>Room Type:</label>
+                <label>Fname TH:</label>
               </td>
               <td>
                 <input
                   type="text"
-                  name="room_type"
+                  name="fnameth"
                   className="text-input"
-                  value={inputs.room_type}
+                  value={inputs.fnameth}
                   onChange={handleChange}
                   required
                 />
@@ -121,14 +123,59 @@ function EditRoom({id, onClose }: EditRoomProps) {
             </tr>
             <tr>
               <td>
-                <label>Room Size:</label>
+                <label>LName TH:</label>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="lnameth"
+                  className="text-input"
+                  value={inputs.lnameth}
+                  onChange={handleChange}
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label>Fname EN:</label>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="fnameen"
+                  className="text-input"
+                  value={inputs.fnameen}
+                  onChange={handleChange}
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label>LName EN:</label>
+              </td>
+              <td>
+                <input
+                  type="text"
+                  name="lnameth"
+                  className="text-input"
+                  value={inputs.lnameen}
+                  onChange={handleChange}
+                  required
+                />
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label>Position:</label>
               </td>
               <td>
                 <input
                   type="number"
-                  name="room_size"
+                  name="position"
                   className="text-input"
-                  value={inputs.room_size}
+                  value={inputs.position}
                   onChange={handleChange}
                   required
                 />
@@ -136,54 +183,24 @@ function EditRoom({id, onClose }: EditRoomProps) {
             </tr>
             <tr>
               <td>
-                <label>Floor:</label>
+                <label>department:</label>
               </td>
               <td>
-                <input
-                  type="number"
-                  name="floor"
-                  className="text-input"
-                  value={inputs.floor}
-                  onChange={handleChange}
-                  required
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label>Building:</label>
-              </td>
-              <td>
-                <select name="building_id" value={inputs.building_id} onChange={handleChange} required>
-                  <option value="">Select a building</option>
-                  {buildings.length > 0 ? (
-                    buildings.map((building) => (
-                      <option key={building.id} value={building.id}>
-                        {building.id} {/* Assuming there's a name field */}
+                <select name="department_id" value={inputs.department_id} onChange={handleChange} required>
+                  <option value="">Select a department</option>
+                  {department.length > 0 ? (
+                    department.map((department) => (
+                      <option key={department.id} value={department.id}>
+                        {department.id} {/* Assuming there's a name field */}
                       </option>
                     ))
                   ) : (
-                    <option disabled>No buildings available</option>
+                    <option disabled>No department available</option>
                   )}
                 </select>
               </td>
             </tr>
             <tr>
-              <td>
-                <label>Status Active:</label>
-              </td>
-              <td>
-                <select name="status_active" value={inputs.status_active} onChange={handleChange} required>
-                  <option value="">Select status</option>
-                  <option value="0">Active</option>
-                  <option value="1">Inactive</option>
-                </select>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label>Updated By:</label>
-              </td>
               <td>
                 <input
                   type="text"
@@ -224,4 +241,4 @@ function EditRoom({id, onClose }: EditRoomProps) {
   );
 }
 
-export default EditRoom;
+export default EditEmployee;

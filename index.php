@@ -98,10 +98,10 @@ switch ($method) {
 
         $meeting_room = json_decode(file_get_contents('php://input'));
 
-        if (!isset($meeting_room->create_date) || empty($meeting_room->create_date)) {
-            $meeting_room->create_date = date('Y-m-d');
+        if (!isset($meeting_room->update_date) || empty($meeting_room->update_date)) {
+            $meeting_room->update_date = date('Y-m-d');
         } else {
-            $meeting_room->create_date = date("Y-m-d",strtotime($meeting_room->create_date));
+            $meeting_room->update_date = date("Y-m-d",strtotime($meeting_room->update_date));
         }
 
         $building_id = $meeting_room->building_id;
@@ -130,6 +130,7 @@ switch ($method) {
             $stmt->bindParamindParam(':create_by', $meeting_room->create_by);
             $stmt->bindParam(':create_date', $meeting_room->create_date);
             $stmt->bindParam(':update_by', $meeting_room->update_by);
+            $stmt->bindParam(':create_date', $meeting_room->update_date);
             $stmt->bindParam(':update_date', $me(':id', $path[3]));
 
             if ($stmt->execute()) {

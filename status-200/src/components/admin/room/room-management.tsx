@@ -147,7 +147,7 @@ function RoomManagement() {
               X
             </button>
             {editRoomId ? (
-              <EditRoom roomId={editRoomId} onClose={handleCloseModal} />
+              <EditRoom id={editRoomId} onClose={handleCloseModal} />
             ) : (
               <CreateRoom onClose={handleCloseModal} />
             )}
