@@ -30,6 +30,11 @@ export function UserProvider({ children }: UserProviderProps): React.JSX.Element
     try {
       const { data, error } = await authClient.getUser();
 
+      if (data) {
+        const userRole = data.user_role; // สมมุติว่ามีฟิลด์ user_role ในข้อมูลผู้ใช้
+        setState((prev) => ({ ...prev, user: { ...data, user_role: userRole }, error: null, isLoading: false }));
+      }
+
       if (error) {
         logger.error(error);
         setState((prev) => ({ ...prev, user: null, error: 'Something went wrong', isLoading: false }));

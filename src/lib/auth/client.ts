@@ -21,45 +21,54 @@ export interface SignInWithPasswordParams {
 }
 
 class AuthClient {
-  // Sign up - you can implement if needed
+  // Sign up
   async signUp(params: SignUpParams): Promise<{ error?: string }> {
     try {
       // เรียกใช้ API ด้วย fetch เพื่อเพิ่มข้อมูลผู้ใช้ใหม่
-      const response = await fetch("http://localhost:3005/users", {
-        method: "POST",
+      const response = await fetch('http://localhost:3000/api/users', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(params),  // แปลง params เป็น JSON เพื่อส่งไปยังเซิร์ฟเวอร์
+        body: JSON.stringify(params), // แปลง params เป็น JSON เพื่อส่งไปยังเซิร์ฟเวอร์
       });
-  
+
       if (!response.ok) {
-        throw new Error("Failed to create user");
+        throw new Error('Failed to create user');
       }
-  
+
       // สร้าง token สำหรับการ Authentication
       const token = generateToken();
-      localStorage.setItem("custom-auth-token", token);
-  
-      return {};  // ส่งกลับว่างเพื่อแสดงว่าสำเร็จ
+      localStorage.setItem('custom-auth-token', token);
+
+      return {}; // ส่งกลับว่างเพื่อแสดงว่าสำเร็จ
     } catch (error) {
-      console.error("Sign up failed:", error);
-      return { error: error.message };  // ส่งกลับ error ในกรณีที่เกิดปัญหา
+      console.error('Sign up failed:', error);
+      return { error: error.message }; // ส่งกลับ error ในกรณีที่เกิดปัญหา
     }
   }
-  
 
+  // Sign in with password
   // Sign in with password
   async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
     const { username, password } = params;
-
+    console.log('paramsssssssssssssssssss :', params);
     try {
-      // Fetch users from JSON server
-      const response = await fetch('http://localhost:3005/users');
+      // Fetch users from the server
+      const response = await fetch('http://localhost:3000/api/auth', {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }), // แปลง params เป็น JSON เพื่อส่งไปยังเซิร์ฟเว
+      });
+
       const users: User[] = await response.json();
 
+      console.log('users in client :', users);
+
       // Find the user with the matching credentials
-      const user = users.find(u => u.username === username && u.password === password);
+      const user = users.find((u) => u.username === username && u.password === password);
 
       if (!user) {
         return { error: 'Invalid credentials' };
@@ -84,8 +93,14 @@ class AuthClient {
     }
 
     try {
-      // Fetch users from JSON server
-      const response = await fetch('http://localhost:3005/users');
+      // Fetch users from the server
+      const response = await fetch('http://localhost:3000/api/auth', {
+        method: 'GET', // กำหนด method เป็น GET
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
       const users: User[] = await response.json();
 
       // For simplicity, assume the first user matches (or extend logic to map tokens to users)
@@ -105,4 +120,3 @@ class AuthClient {
 }
 
 export const authClient = new AuthClient();
-

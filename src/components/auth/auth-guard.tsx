@@ -37,6 +37,17 @@ export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | nul
       return;
     }
 
+    if (user) {
+      // สามารถตรวจสอบ user_role ได้ที่นี่ด้วย
+      if (user.user_role === 'admin') {
+        // logic for admin
+      } else if (user.user_role === 'user') {
+        // logic for user
+      }
+      setIsChecking(false);
+      return;
+    }
+
     // ถ้า user ล็อกอินแล้ว ให้หยุดการตรวจสอบ
     setIsChecking(false);
   }, [isLoading, user, error, router]);

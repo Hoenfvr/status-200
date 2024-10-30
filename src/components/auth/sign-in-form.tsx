@@ -29,7 +29,7 @@ const schema = zod.object({
 
 type Values = zod.infer<typeof schema>;
 
-const defaultValues = { username: 'admin1', password: '1234' } satisfies Values;
+const defaultValues = { username: 'john_doe', password: 'password123' } satisfies Values;
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
@@ -44,6 +44,7 @@ export function SignInForm(): React.JSX.Element {
 
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
+      console.log('valuesssssssssssssssssssssssssss', values);
       setIsPending(true);
 
       const { error } = await authClient.signInWithPassword(values);
