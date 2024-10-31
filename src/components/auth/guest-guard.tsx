@@ -29,10 +29,10 @@ export function GuestGuard({ children }: GuestGuardProps): React.JSX.Element | n
 
     if (user) {
       if (user.user_type === 'admin') {
-        logger.debug('[GuestGuard]: Admin user logged in, redirecting to admin dashboard');
+        logger.debug('[GuestGuard]: Admin user logged in, redirecting to admin approve');
         router.replace(paths.admin.approve);
       } else if (user.user_type === 'user') {
-        logger.debug('[GuestGuard]: Regular user logged in, redirecting to user dashboard');
+        logger.debug('[GuestGuard]: Regular user logged in, redirecting to user calendar');
         router.replace(paths.user.calendar);  // Update to the path where regular users should go
       }
       return;

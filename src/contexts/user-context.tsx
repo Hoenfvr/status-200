@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 
+import { useEffect } from 'react';
+import { useUser } from '@/hooks/use-user';
 import type { User } from '@/types/user';
 import { authClient } from '@/lib/auth/client';
 import { logger } from '@/lib/default-logger';
@@ -26,28 +28,38 @@ export function UserProvider({ children }: UserProviderProps): React.JSX.Element
     isLoading: true,
   });
 
-  const checkSession = React.useCallback(async (): Promise<void> => {
-    try {
-      const { data, error } = await authClient.getUser();
-
-      if (data) {
-        const userRole = data.user_role; // สมมุติว่ามีฟิลด์ user_role ในข้อมูลผู้ใช้
-        setState((prev) => ({ ...prev, user: { ...data, user_role: userRole }, error: null, isLoading: false }));
-      }
-
-      if (error) {
-        logger.error(error);
-        setState((prev) => ({ ...prev, user: null, error: 'Something went wrong', isLoading: false }));
-        return;
-      }
-
-      setState((prev) => ({ ...prev, user: data ?? null, error: null, isLoading: false }));
-    } catch (err) {
-      logger.error(err);
-      setState((prev) => ({ ...prev, user: null, error: 'Something went wrong', isLoading: false }));
+  const checkSession = async () => {
+    const token = localStorage.getItem('custom-auth-token');
+    
+    if (!token) {
+      console.error('No token provided');
+      return;
     }
+  
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/check-token', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error('Invalid token');
+      }
+  
+      const user = await response.json();
+      // จัดการข้อมูลผู้ใช้ที่ได้รับ
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+  useEffect(() => {
+    checkSession();
   }, []);
-
+  
   React.useEffect(() => {
     checkSession().catch((err: unknown) => {
       logger.error(err);

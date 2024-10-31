@@ -1,6 +1,9 @@
 'use client';
 
+import * as crypto from 'crypto';
+
 import type { User } from '@/types/user';
+import { logger } from '@/lib/default-logger';
 
 function generateToken(): string {
   const arr = new Uint8Array(12);
@@ -48,67 +51,128 @@ class AuthClient {
     }
   }
 
+  // legendstart โค้ดเก่า
   // Sign in with password
-  // Sign in with password
-  async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
+  // async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
+  //   const { username, password } = params;
+  //   console.log('paramsssssssssssssssssss :', params);
+  //   try {
+  //     // Fetch users from the server
+  //     const response = await fetch('http://localhost:3000/api/auth', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ username, password }), // แปลง params เป็น JSON เพื่อส่งไปยังเซิร์ฟเว
+  //     });
+
+  //     const users: User[] = await response.json();
+
+  //     console.log('users in client :', users);
+
+  //     // Find the user with the matching credentials
+  //     const user = users.find((u) => u.username === username && u.password === password);
+
+  //     if (!user) {
+  //       return { error: 'Invalid credentials' };
+  //     }
+
+  //     // Generate token and store in localStorage
+  //     const token = generateToken();
+  //     console.log('token', token);
+  //     localStorage.setItem('custom-auth-token', token);
+  //     return {};
+  //   } catch (error) {
+  //     return { error: 'Error during authentication' };
+  //   }
+  // }
+  // legendend
+  // src/app/lib/auth.ts
+
+  async authenticateUser(params: SignInWithPasswordParams): Promise<{ error?: string }> {
     const { username, password } = params;
-    console.log('paramsssssssssssssssssss :', params);
+
     try {
-      // Fetch users from the server
-      const response = await fetch('http://localhost:3000/api/auth', {
-        method: 'POST', 
+      const response = await fetch('http://localhost:3000/api/auth/sign-in', {
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }), // แปลง params เป็น JSON เพื่อส่งไปยังเซิร์ฟเว
+        body: JSON.stringify({ username, password }),
       });
 
-      const users: User[] = await response.json();
-
-      console.log('users in client :', users);
-
-      // Find the user with the matching credentials
-      const user = users.find((u) => u.username === username && u.password === password);
-
-      if (!user) {
-        return { error: 'Invalid credentials' };
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        return { error: errorResponse.message || 'Error during authentication' };
       }
 
-      // Generate token and store in localStorage
-      const token = generateToken();
-      console.log('token', token);
+      const { token, user } = await response.json();
+
+      // เก็บโทเค็นใน localStorage
       localStorage.setItem('custom-auth-token', token);
-      return {};
+
+      console.log('Token in authenticateUser:', token);
+      console.log('User data in authenticateUser:', user);
+
+      return { error: null }; // คืนค่าความสำเร็จ
     } catch (error) {
-      return { error: 'Error during authentication' };
+      return { error: 'Network error or server not reachable' };
     }
   }
 
   // Get the current logged-in user based on token
-  async getUser(): Promise<{ data?: User | null; error?: string }> {
+  public async getUser(): Promise<{ data?: User | null; error?: string }> {
     const token = localStorage.getItem('custom-auth-token');
-
+    console.log('token in getUser:', token); // ตรวจสอบว่าโทเค็นมีอยู่
+  
     if (!token) {
-      return { data: null };
+      return { data: null, error: 'No token found' };
     }
-
+  
     try {
-      // Fetch users from the server
-      const response = await fetch('http://localhost:3000/api/auth', {
-        method: 'GET', // กำหนด method เป็น GET
+      const response = await fetch('http://localhost:3000/api/auth/check-token', {
+        method: 'POST',
         headers: {
+          'Authorization': `Bearer ${token}`, // ส่งโทเค็นใน header
           'Content-Type': 'application/json',
         },
       });
-
-      const users: User[] = await response.json();
-
-      // For simplicity, assume the first user matches (or extend logic to map tokens to users)
-      const user = users[0]; // You might implement token-user mapping
-
-      return { data: user || null };
+  
+      if (!response.ok) {
+        const errorResponse = await response.json();
+        return { data: null, error: errorResponse.error || 'Unable to fetch user data' };
+      }
+  
+      const user = await response.json();
+      return { data: user, error: null };
     } catch (error) {
-      return { error: 'Unable to fetch user data' };
+      console.error('Error fetching user data:', error);
+      return { error: 'Network error or server not reachable' };
+    }
+  }
+  
+  
+
+  async getUserRole(username: string): Promise<string | null> {
+    try {
+      const response = await fetch(`http://localhost:3000/api/auth`, {
+        // เรียกไปที่ API route ใหม่
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username }), // ส่ง username ไปเพื่อดึงบทบาท
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      return data.user_role || null; // สมมติว่า API ส่งกลับ user_role
+    } catch (error) {
+      console.error('Error fetching user role:', error);
+      return null;
     }
   }
 

@@ -19,9 +19,11 @@ import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 
 import { paths } from '@/paths';
-import { authClient } from '@/lib/auth/client';
+import { authClient } from '@/lib/auth/client'; // นำเข้า authClient จากไฟล์ที่กำหนด
 import { useUser } from '@/hooks/use-user';
+import { useState } from 'react';
 
+// กำหนด Schema สำหรับการตรวจสอบข้อมูล
 const schema = zod.object({
   username: zod.string().min(1, { message: 'Username is required' }),
   password: zod.string().min(1, { message: 'Password is required' }),
@@ -29,6 +31,7 @@ const schema = zod.object({
 
 type Values = zod.infer<typeof schema>;
 
+// ค่าปริยายสำหรับฟอร์ม
 const defaultValues = { username: 'john_doe', password: 'password123' } satisfies Values;
 
 export function SignInForm(): React.JSX.Element {
@@ -44,10 +47,11 @@ export function SignInForm(): React.JSX.Element {
 
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
-      console.log('valuesssssssssssssssssssssssssss', values);
+      console.log('Submitted values:', values);
       setIsPending(true);
 
-      const { error } = await authClient.signInWithPassword(values);
+      // เรียกใช้ authenticateUser จาก authClient
+      const { error } = await authClient.authenticateUser(values);
 
       if (error) {
         setError('root', { type: 'server', message: error });
@@ -58,13 +62,11 @@ export function SignInForm(): React.JSX.Element {
       // Refresh the auth state
       await checkSession?.();
 
-      // UserProvider, for this case, will not refresh the router
-      // After refresh, GuestGuard will handle the redirect
+      // Refresh the router after successful login
       router.refresh();
     },
     [checkSession, router, setError]
   );
-  
 
   return (
     <Stack spacing={4} sx={{ pb: '143px', color: 'text.primary' }}>
