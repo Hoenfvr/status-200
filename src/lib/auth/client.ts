@@ -89,7 +89,7 @@ class AuthClient {
   // legendend
   // src/app/lib/auth.ts
 
-  async authenticateUser(params: SignInWithPasswordParams): Promise<{ error?: string }> {
+  async authenticateUser(params: SignInWithPasswordParams) {
     const { username, password } = params;
 
     try {
@@ -106,52 +106,56 @@ class AuthClient {
         return { error: errorResponse.message || 'Error during authentication' };
       }
 
-      const { token, user } = await response.json();
-
+      const result = await response.json();
+      console.log('result in authenticateUser:', result);
       // เก็บโทเค็นใน localStorage
-      localStorage.setItem('custom-auth-token', token);
 
-      console.log('Token in authenticateUser:', token);
-      console.log('User data in authenticateUser:', user);
+      localStorage.setItem('custom-auth-token', result.token);
 
-      return { error: null }; // คืนค่าความสำเร็จ
+      // console.log('Token in authenticateUser:', token);
+
+      // console.log('User data in authenticateUser:', user);
+
+      return  result ; // คืนค่าความสำเร็จ
     } catch (error) {
       return { error: 'Network error or server not reachable' };
     }
   }
 
   // Get the current logged-in user based on token
-  public async getUser(): Promise<{ data?: User | null; error?: string }> {
+  async getUser() {
     const token = localStorage.getItem('custom-auth-token');
-    console.log('token in getUser:', token); // ตรวจสอบว่าโทเค็นมีอยู่
-  
+
+    console.log(`token in getUser : ${token}`);
+
     if (!token) {
       return { data: null, error: 'No token found' };
     }
-  
+
     try {
       const response = await fetch('http://localhost:3000/api/auth/check-token', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`, // ส่งโทเค็นใน header
+          'Authorization': `${token}`, // แก้ไขที่นี่
           'Content-Type': 'application/json',
         },
       });
-  
+      console.log(`response in getUser :`,response)
+
+
       if (!response.ok) {
         const errorResponse = await response.json();
         return { data: null, error: errorResponse.error || 'Unable to fetch user data' };
       }
-  
+
       const user = await response.json();
+      console.log(`user in getUser :`,user)
       return { data: user, error: null };
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      console.error('Network error or server not reachable:', error);
       return { error: 'Network error or server not reachable' };
     }
   }
-  
-  
 
   async getUserRole(username: string): Promise<string | null> {
     try {

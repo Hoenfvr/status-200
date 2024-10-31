@@ -1,11 +1,11 @@
 'use client';
 
 import * as React from 'react';
+import { usePathname } from 'next/navigation';
 
-import { useEffect } from 'react';
-import { useUser } from '@/hooks/use-user';
 import type { User } from '@/types/user';
-import { authClient } from '@/lib/auth/client';
+import { authClient } from '@/lib/auth/client'; // นำเข้า authClient
+
 import { logger } from '@/lib/default-logger';
 
 export interface UserContextValue {
@@ -28,45 +28,32 @@ export function UserProvider({ children }: UserProviderProps): React.JSX.Element
     isLoading: true,
   });
 
-  const checkSession = async () => {
-    const token = localStorage.getItem('custom-auth-token');
+  const checkSession = React.useCallback(async (): Promise<void> => {
+    // const pathname = usePathname()
+    const path = window.location.href;
     
-    if (!token) {
-      console.error('No token provided');
+    console.log('path in checkSession : ',path)
+    if (path == 'http://localhost:3000/auth/sign-in') return;
+
+    const { data, error } = await authClient.getUser();
+
+    console.log(`data in checkSession : `, data);
+    console.log(`error in checkSession : `, error);
+
+    if (error) {
+      logger.error('Error fetching user data:', error); // เพิ่มข้อความเพื่อบันทึกข้อผิดพลาดให้ชัดเจน
+      setState((prev) => ({ ...prev, user: null, error: 'Something went wrong', isLoading: false }));
       return;
     }
-  
-    try {
-      const response = await fetch('http://localhost:3000/api/auth/check-token', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error('Invalid token');
-      }
-  
-      const user = await response.json();
-      // จัดการข้อมูลผู้ใช้ที่ได้รับ
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  
-  useEffect(() => {
-    checkSession();
+
+    setState((prev) => ({ ...prev, user: data ?? null, error: null, isLoading: false }));
   }, []);
-  
+
   React.useEffect(() => {
     checkSession().catch((err: unknown) => {
       logger.error(err);
-      // noop
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- Expected
-  }, []);
+  }, [checkSession]);
 
   return <UserContext.Provider value={{ ...state, checkSession }}>{children}</UserContext.Provider>;
 }

@@ -1,9 +1,8 @@
 export interface User {
-  user_id: number; // ใช้ user_id แทน id
+  id: number; // แก้ไขจาก user_id เป็น id หากใช้คอลัมน์ id
   username: string; // ใช้ username แทน email
-  password: string; // password ที่ตรงกับ mock data
-  user_role: 'user' | 'admin'; // user_type ที่กำหนดประเภทของผู้ใช้
-  firstname: string;
-  lastname: string;
+  password: string; // รหัสผ่าน
+  token: string | null; // โทเค็นที่อาจเป็น NULL
+  user_role: 'user' | 'admin'; // ประเภทผู้ใช้
   [key: string]: unknown;
 }

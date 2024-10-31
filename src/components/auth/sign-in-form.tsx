@@ -19,11 +19,10 @@ import { Controller, useForm } from 'react-hook-form';
 import { z as zod } from 'zod';
 
 import { paths } from '@/paths';
-import { authClient } from '@/lib/auth/client'; // นำเข้า authClient จากไฟล์ที่กำหนด
+import { authClient } from '@/lib/auth/client';
 import { useUser } from '@/hooks/use-user';
-import { useState } from 'react';
 
-// กำหนด Schema สำหรับการตรวจสอบข้อมูล
+// Schema for form validation
 const schema = zod.object({
   username: zod.string().min(1, { message: 'Username is required' }),
   password: zod.string().min(1, { message: 'Password is required' }),
@@ -31,8 +30,10 @@ const schema = zod.object({
 
 type Values = zod.infer<typeof schema>;
 
-// ค่าปริยายสำหรับฟอร์ม
-const defaultValues = { username: 'john_doe', password: 'password123' } satisfies Values;
+const defaultValues = {
+  username: 'john_doe',
+  password: 'password123',
+};
 
 export function SignInForm(): React.JSX.Element {
   const router = useRouter();
@@ -40,29 +41,53 @@ export function SignInForm(): React.JSX.Element {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [isPending, setIsPending] = React.useState<boolean>(false);
 
-  const { control, handleSubmit, setError, formState: { errors } } = useForm<Values>({
-    defaultValues,
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   setError,
+  //   formState: { errors },
+  // } = useForm<Values>({
+  //   resolver: zodResolver(schema),
+  // });
+
+  const {
+    control,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<Values>({
     resolver: zodResolver(schema),
+    defaultValues, // ใช้ค่าปริยายที่ตั้งไว้
   });
 
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
-      console.log('Submitted values:', values);
       setIsPending(true);
 
-      // เรียกใช้ authenticateUser จาก authClient
-      const { error } = await authClient.authenticateUser(values);
+      const result = await authClient.authenticateUser(values);
 
-      if (error) {
-        setError('root', { type: 'server', message: error });
-        setIsPending(false);
-        return;
+      // const { error } = await authClient.authenticateUser(values);
+
+      console.log('result in [SignInForm] : ', result);
+
+      // if (error) {
+      //   setError('root', { type: 'server', message: error }); // แสดงข้อผิดพลาดที่ได้รับ
+      //   setIsPending(false);
+      //   return;
+      // }
+
+      setIsPending(false);
+
+      // เช็ค error_role และนำทางไปยังหน้าที่เหมาะสม
+      if (result) {
+        if (result.user.user_role === 'admin') {
+          router.push(paths.admin.approve); // แก้ไขเป็น URL ที่เหมาะสมสำหรับ Admin
+        } else if (result.user.user_role === 'user') {
+          router.push(paths.user.calendar); // แก้ไขเป็น URL ที่เหมาะสมสำหรับ User
+        }
       }
 
-      // Refresh the auth state
-      await checkSession?.();
-
-      // Refresh the router after successful login
+      // await checkSession?.(); // ตรวจสอบเซสชันของผู้ใช้
       router.refresh();
     },
     [checkSession, router, setError]
@@ -102,11 +127,13 @@ export function SignInForm(): React.JSX.Element {
                 <InputLabel>Password</InputLabel>
                 <OutlinedInput
                   {...field}
-                  endAdornment={showPassword ? (
-                    <EyeIcon cursor="pointer" onClick={() => setShowPassword(false)} />
-                  ) : (
-                    <EyeSlashIcon cursor="pointer" onClick={() => setShowPassword(true)} />
-                  )}
+                  endAdornment={
+                    showPassword ? (
+                      <EyeIcon cursor="pointer" onClick={() => setShowPassword(false)} />
+                    ) : (
+                      <EyeSlashIcon cursor="pointer" onClick={() => setShowPassword(true)} />
+                    )
+                  }
                   label="Password"
                   type={showPassword ? 'text' : 'password'}
                   sx={{ color: '#fff' }}
