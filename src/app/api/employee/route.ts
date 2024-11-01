@@ -1,27 +1,23 @@
-// pages/api/users.ts
-import type { NextApiRequest, NextApiResponse } from 'next';
+// src/app/api/employees/route.ts
+import { NextRequest, NextResponse } from 'next/server';
 import mysql from 'mysql2/promise';
 
-const dbConfig = {
-  host: 'localhost',
-  user: 'your_username',
-  password: 'your_password',
-  database: 'db_meetingroom',
-};
+const db = mysql.createPool({
+  host: 'localhost', // แก้ไขให้ตรงกับการตั้งค่า MySQL ของคุณ
+  user: 'root', // ชื่อผู้ใช้ MySQL ของคุณ
+  database: 'db_meetingroom', // ชื่อฐานข้อมูลของคุณ
+});
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const connection = await mysql.createConnection(dbConfig);
+// GET API สำหรับดึงข้อมูลพนักงานทั้งหมด
+export async function GET(req: NextRequest) {
+  try {
+    const [rows] = await db.query('SELECT * FROM employee_info'); // ดึงข้อมูลพนักงานทั้งหมด
 
-  if (req.method === 'POST') {
-    const { firstName, lastName, username, password } = req.body;
+    console.log('[rows] in server employee :', [rows]);
 
-    const [result] = await connection.execute('INSERT INTO user_info (firstName, lastName, username, password) VALUES (?, ?, ?, ?)', [firstName, lastName, username, password]);
-
-    res.status(201).json({ id: result.insertId });
-  } else {
-    const [users] = await connection.execute('SELECT * FROM user_info');
-    res.status(200).json(users);
+    return NextResponse.json(rows, { status: 200 }); // ส่งกลับข้อมูล
+  } catch (error) {
+    console.error('Error fetching employee data:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
-
-  await connection.end();
 }
