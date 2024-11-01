@@ -41,15 +41,6 @@ export function SignInForm(): React.JSX.Element {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [isPending, setIsPending] = React.useState<boolean>(false);
 
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   setError,
-  //   formState: { errors },
-  // } = useForm<Values>({
-  //   resolver: zodResolver(schema),
-  // });
-
   const {
     control,
     handleSubmit,
@@ -63,32 +54,32 @@ export function SignInForm(): React.JSX.Element {
   const onSubmit = React.useCallback(
     async (values: Values): Promise<void> => {
       setIsPending(true);
+      const { error} = await authClient.signInWithPassword(values);
 
-      const result = await authClient.authenticateUser(values);
+      console.log('error : ', error);
 
-      // const { error } = await authClient.authenticateUser(values);
-
-      console.log('result in [SignInForm] : ', result);
-
-      // if (error) {
-      //   setError('root', { type: 'server', message: error }); // แสดงข้อผิดพลาดที่ได้รับ
-      //   setIsPending(false);
-      //   return;
-      // }
+      if (error) {
+        setError('root', { type: 'server', message: error }); // แสดงข้อผิดพลาดที่ได้รับ
+        setIsPending(false);
+        return;
+      }
 
       setIsPending(false);
 
-      // เช็ค error_role และนำทางไปยังหน้าที่เหมาะสม
-      if (result) {
-        if (result.user.user_role === 'admin') {
-          router.push(paths.admin.approve); // แก้ไขเป็น URL ที่เหมาะสมสำหรับ Admin
-        } else if (result.user.user_role === 'user') {
-          router.push(paths.user.calendar); // แก้ไขเป็น URL ที่เหมาะสมสำหรับ User
-        }
+      // เช็คบทบาทของผู้ใช้และนำทางไปยังหน้าที่เหมาะสม
+      const userRole = authClient.getUserRole();
+
+      console.log('userRole onSubmit : ', userRole)
+      
+      if (userRole === 'admin') {
+        router.push('/admin');
+      } else {
+        router.push('/user');
       }
 
-      // await checkSession?.(); // ตรวจสอบเซสชันของผู้ใช้
+      await checkSession?.(); // ตรวจสอบเซสชันของผู้ใช้
       router.refresh();
+      // location.reload();
     },
     [checkSession, router, setError]
   );

@@ -25,26 +25,29 @@ export interface UserPopoverProps {
 
 export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): React.JSX.Element {
   const { checkSession } = useUser();
-
   const router = useRouter();
+  const [isPending, setIsPending] = React.useState<boolean>(false);
 
   const handleSignOut = React.useCallback(async (): Promise<void> => {
+    setIsPending(true); // ตั้งค่าการโหลด
+
     try {
       const { error } = await authClient.signOut();
 
       if (error) {
         logger.error('Sign out error', error);
+        setIsPending(false); // ยกเลิกการโหลดเมื่อมีข้อผิดพลาด
         return;
       }
 
-      // Refresh the auth state
-      await checkSession?.();
+      await checkSession?.(); // ตรวจสอบเซสชันของผู้ใช้ใหม่
 
-      // UserProvider, for this case, will not refresh the router and we need to do it manually
-      router.refresh();
-      // After refresh, AuthGuard will handle the redirect
+      // นำทางไปยังหน้าเข้าสู่ระบบ
+      router.push(paths.auth.signIn);
     } catch (err) {
       logger.error('Sign out error', err);
+    } finally {
+      setIsPending(false); // ยกเลิกการโหลด
     }
   }, [checkSession, router]);
 
@@ -57,30 +60,18 @@ export function UserPopover({ anchorEl, onClose, open }: UserPopoverProps): Reac
       slotProps={{ paper: { sx: { width: '240px' } } }}
     >
       <Box sx={{ p: '16px 20px ' }}>
-        <Typography variant="subtitle1">Administrator</Typography>
+        <Typography variant="subtitle1">User</Typography>
         <Typography color="text.secondary" variant="body2">
-          admin11
+          User11
         </Typography>
       </Box>
       <Divider />
       <MenuList disablePadding sx={{ p: '8px', '& .MuiMenuItem-root': { borderRadius: 1 } }}>
-        {/* <MenuItem component={RouterLink} href={paths.admin.settings} onClick={onClose}>
-          <ListItemIcon>
-            <GearSixIcon fontSize="var(--icon-fontSize-md)" />
-          </ListItemIcon>
-          Settings
-        </MenuItem>
-        <MenuItem component={RouterLink} href={paths.admin.account} onClick={onClose}>
-          <ListItemIcon>
-            <UserIcon fontSize="var(--icon-fontSize-md)" />
-          </ListItemIcon>
-          Profile
-        </MenuItem> */}
-        <MenuItem onClick={handleSignOut}>
+        <MenuItem onClick={handleSignOut} disabled={isPending}>
           <ListItemIcon>
             <SignOutIcon fontSize="var(--icon-fontSize-md)" />
           </ListItemIcon>
-          Sign out
+          {isPending ? 'Signing out...' : 'Sign out'}
         </MenuItem>
       </MenuList>
     </Popover>
